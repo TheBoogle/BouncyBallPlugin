@@ -24,6 +24,7 @@
 		"baseUrl": "src",
 		"incremental": true,
 		"tsBuildInfoFile": "out/tsconfig.tsbuildinfo",
-		"noImplicitReturns": true
+		"noImplicitReturns": true,
+		"removeComments": true
 	}
 }
