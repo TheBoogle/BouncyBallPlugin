@@ -11,7 +11,7 @@ export class PluginManager {
 
 	protected DebugMode = false;
 
-	protected RenderSteppedSignal: RBXScriptConnection | undefined;
+	protected HeartbeatSignal: RBXScriptConnection | undefined = undefined;
 
 	protected DebugBall = new Instance("Part");
 
@@ -40,7 +40,7 @@ export class PluginManager {
 			this.DebugBall.Destroy();
 		}
 
-		this.RenderSteppedSignal = RunService.RenderStepped.Connect((DeltaTime: number) => {
+		this.HeartbeatSignal = RunService.Heartbeat.Connect((DeltaTime: number) => {
 			this.Update(DeltaTime);
 		});
 	}
@@ -70,7 +70,8 @@ export class PluginManager {
 
 	public Destroy(): void {
 		this.DebugBall.Destroy();
-		this.RenderSteppedSignal?.Disconnect();
+
+		this.HeartbeatSignal?.Disconnect();
 	}
 
 	public Update(DeltaTime: number): void {
@@ -92,25 +93,24 @@ export class PluginManager {
 		this.DebugBall.Position = this.BouncyBall.Position;
 
 		if (this.IsInCameraMode) {
-			this.GetCamera().CFrame = this.GetCamera().CFrame.Lerp(
-				new CFrame(
-					this.BouncyBall.Position,
-					this.BouncyBall.Position.mul(new Vector3(1, 0, 1))
-						.add(this.BouncyBall.Velocity.mul(new Vector3(1, 0, 1)))
-						.add(
-							new Vector3(
-								0,
-								math.clamp(
-									this.BouncyBall.Position.Y + this.BouncyBall.Velocity.Y * 0.5,
-									-math.huge,
-									this.BouncyBall.Position.Y + 50,
-								),
-								0,
-							),
+			const GoingTo = this.BouncyBall.Position.mul(new Vector3(1, 0, 1))
+				.add(this.BouncyBall.Velocity.mul(new Vector3(1, 0, 1)))
+				.add(
+					new Vector3(
+						0,
+						math.clamp(
+							this.BouncyBall.Position.Y + this.BouncyBall.Velocity.Y * 0.5,
+							-math.huge,
+							this.BouncyBall.Position.Y + 50,
 						),
-				),
+						0,
+					),
+				);
+			this.GetCamera().CFrame = this.GetCamera().CFrame.Lerp(
+				new CFrame(this.BouncyBall.Position, GoingTo),
 				math.min(DeltaTime * this.Reactiveness, 1),
 			);
+			this.GetCamera().Focus = new CFrame(this.BouncyBall.Position, GoingTo);
 		}
 	}
 }

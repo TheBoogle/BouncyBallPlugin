@@ -1,7 +1,11 @@
 import { PluginManager } from "PluginManager";
 
 const Toolbar = plugin.CreateToolbar("Bouncy Ball Plugin");
-const Button = Toolbar.CreateButton("Toggle Bouncy Mode", "", "");
+const Button = Toolbar.CreateButton(
+	"Toggle Bouncy Mode",
+	"Enter or exit bouncy ball mode",
+	"rbxassetid://75391365555963",
+);
 // const CameraButton = Toolbar.CreateButton("Toggle Camera Mode", "", "");
 // const BringToCameraButton = Toolbar.CreateButton("Bring Ball To Camera", "", "");
 
