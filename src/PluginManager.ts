@@ -65,6 +65,8 @@ export class PluginManager {
 
 		const Speed = (settings().Studio as unknown as { ["Camera Speed"]: 1 })["Camera Speed"] as number;
 
+		this.BouncyBall.UpdateListOfParts();
+
 		this.PendingForces.push(this.GetCamera().CFrame.LookVector.mul(Speed * 10000));
 	}
 

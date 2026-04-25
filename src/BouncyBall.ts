@@ -15,10 +15,23 @@ export class BouncyBall {
 	private readonly Epsilon = 1e-1;
 
 	constructor() {
-		this.RaycastParams.FilterType = Enum.RaycastFilterType.Exclude;
-		this.RaycastParams.FilterDescendantsInstances = [...Workspace.QueryDescendants("BasePart[Transparency = 1]")];
+		this.UpdateListOfParts();
 	}
 
+	public UpdateListOfParts(): void {
+		this.RaycastParams.FilterType = Enum.RaycastFilterType.Exclude;
+		this.RaycastParams.RespectCanCollide = true;
+
+		const ListOfParts = Workspace.QueryDescendants("BasePart").filter((part) => {
+			if (part.IsA("BasePart") && part.Transparency > 0.7) {
+				return true;
+			}
+
+			return false;
+		});
+
+		this.RaycastParams.FilterDescendantsInstances = [...ListOfParts];
+	}
 	protected CollisionCheck(DeltaTime: number): RaycastResult | undefined {
 		const Origin = this.Position;
 		const Direction = this.Velocity.mul(DeltaTime);
